@@ -78,7 +78,7 @@ jobs:
         run: |
           cd ./mpv
           echo vo=gpu >> build/mpv.app/Contents/Resources/mpv.conf
-          echo gpu-api=vulkan build/mpv.app/Contents/Resources/mpv.conf
+          echo gpu-api=vulkan >> build/mpv.app/Contents/Resources/mpv.conf
           
       - name: Upload to Artifacts
         uses: actions/upload-artifact@v3
