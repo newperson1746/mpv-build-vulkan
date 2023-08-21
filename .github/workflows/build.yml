@@ -31,11 +31,14 @@ jobs:
           hdiutil attach vulkansdk-macos-1.3.250.1.dmg
           sudo /Volumes/VulkanSDK/InstallVulkan.app/Contents/MacOS/InstallVulkan --root ~/VulkanSDK/1.3.250.1 --accept-licenses --default-answer --confirm-command install com.lunarg.vulkan.core com.lunarg.vulkan.usr
 
-      - name: Install shaderc (overwrite)
+      - name: Install shaderc
         continue-on-error: true
         run: |
           brew update
           brew install shaderc
+          
+      - name: Overwrite shaderc
+        run: |        
           brew link --overwrite shaderc
           
       - name: Install dependencies
