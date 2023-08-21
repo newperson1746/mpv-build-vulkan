@@ -83,8 +83,8 @@ jobs:
       - name: Upload to Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: Artifacts
-          path: mpv/build
+          name: mpv.app
+          path: mpv/build/mpv.app
 
       - name: Cleanup (unmount dmg)
         run: |
