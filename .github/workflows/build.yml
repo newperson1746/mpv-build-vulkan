@@ -46,15 +46,21 @@ jobs:
         run: |
           brew install autoconf automake pkg-config libtool python freetype fribidi little-cms2 lua@5.1 meson nasm dylibbundler
 
-      - name: Build with mpv-build
+      - name: Dep update with mpv-build
         id: build
         continue-on-error: true
         run: |
-          ./rebuild -j$(sysctl -n hw.logicalcpu)
+          ./use-mpv-master
+          ./update
+
+      - name: Build mpv
+        run: |
+          ./clean
+          ./build -j$(sysctl -n hw.logicalcpu)
         env:
           CC: "${{ matrix.cc }}"
           TRAVIS_OS_NAME: "${{ matrix.os }}"
-
+          
       - name: Make app bundle
         run: |
           cd ./mpv
