@@ -51,6 +51,9 @@ jobs:
         continue-on-error: true
         run: |
           ./use-mpv-master
+          ./use-ffmpeg-master
+          ./use-libplacebo-master
+          ./use-libass-master
           ./update
 
       - name: Build mpv
