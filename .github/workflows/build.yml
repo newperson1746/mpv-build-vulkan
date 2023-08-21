@@ -1,0 +1,62 @@
+name: build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches: [master]
+
+jobs:
+
+  macos:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        cc:
+          - "clang"
+        os:
+          - "macos-13"
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Remove stray upstream python binary symlinks under /usr/local
+        run: |
+          find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete -print
+          brew unlink python && brew link --overwrite python
+
+      - name: Install VulkanSDK
+        run: |
+          curl -O https://sdk.lunarg.com/sdk/download/1.3.250.1/mac/vulkansdk-macos-1.3.250.1.dmg
+          hdiutil attach vulkansdk-macos-1.3.250.1.dmg
+          sudo /Volumes/VulkanSDK/InstallVulkan.app/Contents/MacOS/InstallVulkan --root ~/VulkanSDK/1.3.250.1 --accept-licenses --default-answer --confirm-command install com.lunarg.vulkan.core com.lunarg.vulkan.usr
+
+      - name: Install dependencies
+        run: |
+          brew update
+          brew install autoconf automake pkg-config libtool python freetype fribidi little-cms2 lua@5.1 meson shaderc nasm dylibbundler
+
+      - name: Build with mpv-build
+        id: build
+        run: |
+          ./rebuild -j$(sysctl -n hw.logicalcpu)
+        env:
+          CC: "${{ matrix.cc }}"
+          TRAVIS_OS_NAME: "${{ matrix.os }}"
+
+      - name: Make app bundle
+        run: |
+          cd ./mpv
+          python3 TOOLS/osxbundle.py build/mpv --skip-deps
+
+      - name: Bundle dylibs in app
+        run: |
+          cd ./mpv
+          dylibbundler --bundle-deps --dest-dir build/mpv.app/Contents/MacOS/lib/ --install-path @executable_path/lib/ --fix-file build/mpv.app/Contents/MacOS/mpv
+          
+      - name: Upload to Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Artifacts
+          path: mpv/build
+        
