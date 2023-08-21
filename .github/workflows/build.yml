@@ -38,6 +38,7 @@ jobs:
           brew install shaderc
           
       - name: Overwrite shaderc
+        continue-on-error: true
         run: |        
           brew link --overwrite shaderc
           
