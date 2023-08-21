@@ -69,7 +69,7 @@ jobs:
       - name: Bundle dylibs in app
         run: |
           cd ./mpv
-          dylibbundler --bundle-deps --dest-dir build/mpv.app/Contents/MacOS/lib/ --install-path @executable_path/lib/ --fix-file build/mpv.app/Contents/MacOS/mpv
+          dylibbundler --bundle-deps --dest-dir build/mpv.app/Contents/MacOS/lib/ --install-path @executable_path/lib/ --fix-file build/mpv.app/Contents/MacOS/mpv -s /usr/local/lib
 
       - name: Set mpv.conf to Vulkan
         run: |
