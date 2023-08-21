@@ -85,4 +85,7 @@ jobs:
         with:
           name: Artifacts
           path: mpv/build
-        
+
+      - name: Cleanup (unmount dmg)
+        run: |
+          hdiutil detach /Volumes/VulkanSDK
